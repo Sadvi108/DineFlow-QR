@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Table {{TABLE_NUMBER}}</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🍽️ Restaurant Menu</h1>
+            <p class="subtitle">Table <span id="table-number">-</span></p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Category Filter -->
+        <div class="categories" id="categories">
+            <button class="category-btn active" data-category="all">All Items</button>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="menu-grid" id="menu-grid">
+            <div class="loading">
+                <h3>Loading menu...</h3>
+                <p>Please wait while we fetch the latest menu items.</p>
+            </div>
+        </div>
+
+        <!-- Empty Cart Message -->
+        <div id="empty-menu" class="empty-state" style="display: none;">
+            <h3>No menu items available</h3>
+            <p>Please check back later or contact the restaurant staff.</p>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Order</h2>
+            <button class="cart-close" id="cart-close">&times;</button>
+        </div>
+        <div class="cart-content">
+            <div id="cart-items">
+                <div class="empty-state">
+                    <h4>Your cart is empty</h4>
+                    <p>Add some delicious items to get started!</p>
+                </div>
+            </div>
+            <div class="cart-total" id="cart-total" style="display: none;">
+                <h3>Total: $<span id="total-amount">0.00</span></h3>
+                <textarea 
+                    id="customer-notes" 
+                    placeholder="Special instructions (optional)..."
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; margin: 1rem 0; resize: vertical; min-height: 80px;"
+                ></textarea>
+                <button class="btn btn-large btn-success" id="confirm-order">
+                    Confirm Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Toggle Button -->
+    <button class="cart-toggle" id="cart-toggle">
+        🛒
+        <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+    </button>
+
+    <!-- Order Confirmation Modal -->
+    <div id="order-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1002; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: 15px; max-width: 500px; width: 90%; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+            <h2 style="color: #2ed573; margin-bottom: 1rem;">Order Confirmed!</h2>
+            <p style="margin-bottom: 1rem;">Your order has been sent to the kitchen.</p>
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <p><strong>Order Number:</strong> <span id="order-number-display">-</span></p>
+                <p><strong>Table:</strong> <span id="table-number-display">-</span></p>
+                <p><strong>Total:</strong> $<span id="order-total-display">0.00</span></p>
+            </div>
+            <p style="color: #666; margin-bottom: 1.5rem;">Please mention your order number when paying at the counter.</p>
+            <button class="btn" onclick="closeOrderModal()">Continue Browsing</button>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/socket.js"></script>
+    <script src="/js/menu.js"></script>
+    <script src="/js/cart.js"></script>
+    <script>
+        // Initialize the table page
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableNumber = getTableNumberFromURL();
+            document.getElementById('table-number').textContent = tableNumber;
+            document.getElementById('table-number-display').textContent = tableNumber;
+            
+            // Initialize menu and cart
+            initializeMenu(tableNumber);
+            initializeCart();
+            
+            // Initialize socket connection
+            const socket = io();
+            socket.emit('join-table', tableNumber);
+            
+            // Listen for order ready notifications
+            socket.on('order-ready', function(data) {
+                showNotification(`Order #${data.orderNumber} is ready for pickup!`, 'success');
+            });
+        });
+
+        function getTableNumberFromURL() {
+            const path = window.location.pathname;
+            const matches = path.match(/\/table\/(\d+)/);
+            return matches ? matches[1] : '1';
+        }
+
+        function closeOrderModal() {
+            document.getElementById('order-modal').style.display = 'none';
+            // Clear cart after successful order
+            clearCart();
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notification-message');
+            
+            messageEl.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Dashboard - Restaurant Orders</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>📊 Kitchen Dashboard</h1>
+            <p class="subtitle">Real-time Order Management</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div>
+                <h2>Live Orders</h2>
+                <p id="last-updated">Last updated: <span>-</span></p>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <select id="status-filter" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                    <option value="all">All Orders</option>
+                    <option value="pending">Pending</option>
+                    <option value="preparing">Preparing</option>
+                    <option value="ready">Ready</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <input 
+                    type="text" 
+                    id="search-order" 
+                    placeholder="Search by order number..." 
+                    style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px; min-width: 200px;"
+                >
+                <button class="btn" onclick="refreshOrders()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="dashboard-stats" id="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-number" id="total-orders">-</div>
+                <div class="stat-label">Total Orders</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pending-orders">-</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="preparing-orders">-</div>
+                <div class="stat-label">Preparing</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="ready-orders">-</div>
+                <div class="stat-label">Ready</div>
+            </div>
+        </div>
+
+        <!-- Orders Grid -->
+        <div class="orders-grid" id="orders-grid">
+            <div class="loading">
+                <h3>Loading orders...</h3>
+                <p>Please wait while we fetch the latest orders.</p>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-orders" class="empty-state" style="display: none;">
+            <h3>No orders found</h3>
+            <p>Orders will appear here as customers place them.</p>
+        </div>
+    </main>
+
+    <!-- Order Details Modal -->
+    <div id="order-details-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1002; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; padding: 2rem; border-radius: 15px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>Order Details</h2>
+                <button onclick="closeOrderDetails()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <div id="order-details-content">
+                <!-- Order details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+    </div>
+
+    <!-- Audio notification -->
+    <audio id="notification-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT" type="audio/wav">
+    </audio>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/socket.js"></script>
+    <script src="/js/dashboard.js"></script>
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            
+            // Add event listeners
+            document.getElementById('status-filter').addEventListener('change', filterOrders);
+            document.getElementById('search-order').addEventListener('input', searchOrders);
+            
+            // Auto-refresh every 30 seconds
+            setInterval(refreshOrders, 30000);
+        });
+
+        function closeOrderDetails() {
+            document.getElementById('order-details-modal').style.display = 'none';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const messageEl = document.getElementById('notification-message');
+            
+            messageEl.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            // Play sound for new orders
+            if (type === 'success' && message.includes('New order')) {
+                playNotificationSound();
+            }
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        function playNotificationSound() {
+            const audio = document.getElementById('notification-sound');
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log('Could not play notification sound'));
+        }
+
+        function updateLastUpdated() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.querySelector('#last-updated span').textContent = timeString;
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        refreshOrders();
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        document.getElementById('search-order').focus();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

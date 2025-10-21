@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant QR Ordering System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🍽️ Restaurant QR Ordering System</h1>
+            <p class="subtitle">Local Network Food Ordering Solution</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div style="max-width: 800px; margin: 3rem auto; text-align: center;">
+            <h2 style="margin-bottom: 2rem; color: #333;">Welcome to Your Restaurant Management System</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+                <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+                    <h3 style="margin-bottom: 1rem; color: #333;">Customer Ordering</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Customers scan QR codes to access table-specific menus and place orders.</p>
+                    <a href="/table/1" class="btn">View Sample Menu (Table 1)</a>
+                </div>
+
+                <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                    <h3 style="margin-bottom: 1rem; color: #333;">Kitchen Dashboard</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Real-time order monitoring and status management for kitchen staff.</p>
+                    <a href="/dashboard" class="btn">Open Dashboard</a>
+                </div>
+
+                <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                    <h3 style="margin-bottom: 1rem; color: #333;">QR Code Generator</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Generate and print QR codes for all restaurant tables.</p>
+                    <a href="/qr-generator" class="btn">Generate QR Codes</a>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">🚀 System Features</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: left;">
+                    <div>
+                        <h4 style="margin-bottom: 0.5rem;">✅ QR Code Ordering</h4>
+                        <p style="opacity: 0.9; font-size: 0.9rem;">Each table has unique QR codes</p>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 0.5rem;">✅ Real-time Updates</h4>
+                        <p style="opacity: 0.9; font-size: 0.9rem;">Instant order notifications</p>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 0.5rem;">✅ Local Network</h4>
+                        <p style="opacity: 0.9; font-size: 0.9rem;">Works completely offline</p>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 0.5rem;">✅ Mobile Responsive</h4>
+                        <p style="opacity: 0.9; font-size: 0.9rem;">Perfect for phones & tablets</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                <h3 style="margin-bottom: 1rem; color: #333;">📋 Quick Setup Guide</h3>
+                <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                    <ol style="color: #666; line-height: 1.8;">
+                        <li><strong>Start the server:</strong> Run <code style="background: #f8f9fa; padding: 0.2rem 0.5rem; border-radius: 3px;">npm start</code> in the backend directory</li>
+                        <li><strong>Generate QR codes:</strong> Visit the QR Generator page and create codes for your tables</li>
+                        <li><strong>Print QR codes:</strong> Place them on restaurant tables</li>
+                        <li><strong>Open dashboard:</strong> Keep the dashboard open on your counter/kitchen device</li>
+                        <li><strong>Start taking orders:</strong> Customers scan QR codes to order!</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #333; color: white; text-align: center; padding: 2rem 0; margin-top: 3rem;">
+        <div class="container">
+            <p>&copy; 2024 Restaurant QR Ordering System - Built for Local Network Use</p>
+            <p style="opacity: 0.7; margin-top: 0.5rem;">Perfect for restaurants, cafes, and food establishments</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple page load animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('[style*="box-shadow"]');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
