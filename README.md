@@ -1,4 +1,4 @@
-# 🍽️ QR-Based Restaurant Ordering System
+# 🍽️ QR-Based Restaurant Ordering System (DineFlow-QR)
 
 A complete local network restaurant ordering system that allows customers to scan QR codes, view menus, place orders, and enables staff to manage orders in real-time.
 
@@ -24,7 +24,7 @@ A complete local network restaurant ordering system that allows customers to sca
 - **Local Network**: Runs entirely within restaurant network
 - **Responsive Design**: Works on phones (customers) and desktops (staff)
 - **Offline Resilience**: Graceful handling of connection issues
-- **Data Persistence**: MongoDB for reliable data storage
+- **Data Persistence**: MongoDB for reliable data storage with in-memory fallback
 
 ## 🏗️ System Architecture
 
@@ -84,6 +84,7 @@ restaurant-ordering-system/
 │   │   └── socket.js            # Real-time communication
 │   └── css/
 │       └── style.css            # Responsive styling
+├── frontend-nextjs/             # Next.js version (alternative)
 └── README.md                    # This file
 ```
 
@@ -96,12 +97,13 @@ restaurant-ordering-system/
 
 ### Installation
 
-1. **Clone or download the project**
+1. **Clone the repository**
    ```bash
-   cd restaurant-ordering-system
+   git clone https://github.com/Sadvi108/DineFlow-QR.git
+   cd DineFlow-QR
    ```
 
-2. **Install dependencies**
+2. **Install backend dependencies**
    ```bash
    cd backend
    npm install
@@ -110,134 +112,26 @@ restaurant-ordering-system/
 3. **Configure environment**
    Edit `backend/.env` file:
    ```env
-   PORT=3000
+   PORT=3001
    MONGODB_URI=mongodb://localhost:27017/restaurant-orders
    JWT_SECRET=your-secret-key-here
    SERVER_IP=192.168.1.10
    ```
 
-4. **Start MongoDB**
+4. **Start MongoDB (if using local)**
    ```bash
-   # If using local MongoDB
    mongod
-   
-   # Or use MongoDB Atlas cloud connection
    ```
 
-5. **Start the server**
+5. **Start the backend server**
    ```bash
    npm start
-   # or for development
-   npm run dev
    ```
 
 6. **Access the system**
-   - Main page: `http://192.168.1.10:3000`
-   - Kitchen Dashboard: `http://192.168.1.10:3000/dashboard`
-   - QR Generator: `http://192.168.1.10:3000/qr-generator`
-
-### Setting Up Tables
-
-1. **Generate QR Codes**
-   - Visit `http://192.168.1.10:3000/qr-generator`
-   - Enter your server IP address
-   - Generate QR codes for your tables (e.g., Tables 1-20)
-   - Download and print the QR codes
-
-2. **Place QR Codes**
-   - Print each QR code with the table number
-   - Laminate for durability
-   - Place on corresponding tables
-
-3. **Test the System**
-   - Scan a QR code with your phone
-   - Place a test order
-   - Check the kitchen dashboard for the order
-   - Update order status and verify notifications
-
-## 🔧 Configuration
-
-### Server Configuration
-
-**IP Address Setup**: The system needs to run on your local network IP, not localhost.
-
-1. **Find your local IP**:
-   ```bash
-   # Windows
-   ipconfig
-   
-   # Mac/Linux
-   ifconfig
-   ```
-
-2. **Update configuration**:
-   - Update `SERVER_IP` in `.env` file
-   - Use this IP when generating QR codes
-   - Access the system using this IP
-
-### Database Configuration
-
-**MongoDB Setup**:
-```javascript
-// Local MongoDB
-MONGODB_URI=mongodb://localhost:27017/restaurant-orders
-
-// MongoDB Atlas (cloud)
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/restaurant-orders
-```
-
-### Menu Setup
-
-The system includes sample menu items. To customize:
-
-1. **Access the database**:
-   ```bash
-   mongo restaurant-orders
-   db.menuitems.find()
-   ```
-
-2. **Add menu items via API**:
-   ```bash
-   POST /api/menu
-   {
-     "name": "Burger",
-     "description": "Delicious beef burger",
-     "price": 12.99,
-     "category": "Main Course",
-     "image": "burger.jpg",
-     "preparationTime": 15
-   }
-   ```
-
-## 📱 Usage Guide
-
-### For Customers
-
-1. **Scan QR Code**: Use any QR code scanner app
-2. **Browse Menu**: View items by category
-3. **Add to Cart**: Tap + to add items, adjust quantities
-4. **Review Order**: Check cart contents and total
-5. **Confirm Order**: Add notes if needed, confirm order
-6. **Wait for Notification**: You'll be notified when order is ready
-7. **Pickup & Pay**: Mention your order number at the counter
-
-### For Kitchen Staff
-
-1. **Monitor Dashboard**: Keep the dashboard open on a screen
-2. **New Orders**: Orders appear automatically with sound notification
-3. **Update Status**: 
-   - Click "Start Preparing" when you begin cooking
-   - Click "Mark Ready" when food is ready
-   - Click "Complete" when customer picks up
-4. **Payment**: Mark orders as paid when customer pays
-5. **Search Orders**: Use the search box to find specific orders
-
-### For Management
-
-1. **Generate QR Codes**: Use the QR generator for new tables
-2. **View Statistics**: Check order counts and revenue on dashboard
-3. **Manage Menu**: Add/edit menu items via API or database
-4. **Export Data**: Orders are stored in MongoDB for reporting
+   - Main page: `http://localhost:3000`
+   - Kitchen Dashboard: `http://localhost:3001/dashboard`
+   - QR Generator: `http://localhost:3001/qr-generator`
 
 ## 🔧 API Reference
 
@@ -284,48 +178,6 @@ The system includes sample menu items. To customize:
 - Ensure MongoDB is running
 - Check connection string in `.env`
 - Verify database permissions
-
-### Performance Tips
-
-- **Use local MongoDB** for better performance
-- **Optimize images** - compress menu item images
-- **Regular cleanup** - archive old orders periodically
-- **Monitor resources** - check server CPU/memory usage
-
-## 🔒 Security Considerations
-
-- **Local Network Only**: System is designed for internal use
-- **No Internet Required**: Operates completely offline
-- **Basic Authentication**: Add JWT authentication for admin features
-- **Data Backup**: Regular MongoDB backups recommended
-- **Access Control**: Restrict dashboard access to staff devices
-
-## 📈 Scaling & Extensions
-
-### Possible Enhancements
-
-1. **Multi-location Support**: Add restaurant/branch management
-2. **Advanced Analytics**: Detailed reporting and insights
-3. **Inventory Management**: Track ingredient usage
-4. **Customer Accounts**: Optional customer registration
-5. **Payment Integration**: POS system integration
-6. **Printer Integration**: Automatic kitchen ticket printing
-7. **Mobile App**: Native mobile apps for better UX
-
-### Hardware Recommendations
-
-- **Server**: Raspberry Pi 4 or dedicated PC
-- **Network**: Reliable WiFi router with good coverage
-- **Display**: Tablet/monitor for kitchen dashboard
-- **Printer**: Thermal printer for order tickets (optional)
-
-## 📞 Support
-
-For issues or questions:
-1. Check the troubleshooting section
-2. Review server logs for errors
-3. Test individual components (database, API, frontend)
-4. Verify network connectivity
 
 ## 📄 License
 
