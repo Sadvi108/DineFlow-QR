@@ -476,12 +476,120 @@ router.patch('/:id/status', async (req, res) => {
         message: 'Invalid status'
       });
     }
+
+    if (req.useInMemory) {
+      // In-memory implementation
+      const orderIndex = req.inMemoryOrders.findIndex(order => order._id === req.params.id);
+      
+      if (orderIndex === -1) {
+        return res.status(404).json({
+          success: false,
+          message: 'Order not found'
+        });
+      }
+      
+      const order = req.inMemoryOrders[orderIndex];
+      
+      // Prepare update object
+      let updateData = { status };
+      
+      // If changing to preparing, set preparation start time and estimated completion
+      if (status === 'preparing') {
+        const now = new Date();
+        updateData.preparationStartTime = now;
+        
+        // Calculate total preparation time based on items
+        let totalPrepTime = 0;
+        order.items.forEach(item => {
+          const itemPrepTime = 10; // default 10 minutes for in-memory
+          totalPrepTime += itemPrepTime * item.quantity;
+        });
+        
+        // Add some buffer time and set minimum
+        const estimatedMinutes = Math.max(totalPrepTime * 0.8, 15); // minimum 15 minutes
+        updateData.estimatedTime = Math.round(estimatedMinutes);
+        updateData.estimatedCompletionTime = new Date(now.getTime() + estimatedMinutes * 60000);
+      }
+      
+      // If changing to ready, calculate actual preparation time
+      if (status === 'ready') {
+        if (order.preparationStartTime) {
+          const actualTime = (new Date() - new Date(order.preparationStartTime)) / (1000 * 60); // minutes
+          updateData.actualPreparationTime = Math.round(actualTime);
+        }
+      }
+      
+      // Update the order
+      Object.assign(order, updateData, { updatedAt: new Date() });
+      
+      // Emit real-time update with timing information
+      req.io.to('dashboard').emit('order-status-updated', {
+        orderId: order._id,
+        orderNumber: order.orderNumber,
+        status: order.status,
+        tableNumber: order.tableNumber,
+        estimatedTime: order.estimatedTime,
+        estimatedCompletionTime: order.estimatedCompletionTime,
+        preparationStartTime: order.preparationStartTime,
+        actualPreparationTime: order.actualPreparationTime
+      });
+      
+      // Notify table if order is ready
+      if (status === 'ready') {
+        req.io.to(`table-${order.tableNumber}`).emit('order-ready', {
+          orderNumber: order.orderNumber,
+          message: 'Your order is ready!',
+          actualPreparationTime: order.actualPreparationTime
+        });
+      }
+      
+      return res.json({
+        success: true,
+        message: 'Order status updated successfully',
+        data: order
+      });
+    }
+
+    // MongoDB implementation
+    // Prepare update object
+    let updateData = { status };
+    
+    // If changing to preparing, set preparation start time and estimated completion
+    if (status === 'preparing') {
+      const now = new Date();
+      updateData.preparationStartTime = now;
+      
+      // Calculate estimated completion time based on order items
+      const order = await Order.findById(req.params.id).populate('items.menuItem');
+      if (order) {
+        // Calculate total preparation time based on items
+        let totalPrepTime = 0;
+        order.items.forEach(item => {
+          const itemPrepTime = item.menuItem.preparationTime || 10; // default 10 minutes
+          totalPrepTime += itemPrepTime * item.quantity;
+        });
+        
+        // Add some buffer time and set minimum
+        const estimatedMinutes = Math.max(totalPrepTime * 0.8, 15); // minimum 15 minutes
+        updateData.estimatedTime = Math.round(estimatedMinutes);
+        updateData.estimatedCompletionTime = new Date(now.getTime() + estimatedMinutes * 60000);
+      }
+    }
+    
+    // If changing to ready, calculate actual preparation time
+    if (status === 'ready') {
+      const order = await Order.findById(req.params.id);
+      if (order && order.preparationStartTime) {
+        const actualTime = (new Date() - order.preparationStartTime) / (1000 * 60); // minutes
+        updateData.actualPreparationTime = Math.round(actualTime);
+      }
+    }
     
     const order = await Order.findByIdAndUpdate(
       req.params.id,
-      { status },
+      updateData,
       { new: true }
-    ).populate('items.menuItem', 'name category');
+    ).populate('items.menuItem', 'name category preparationTime');
     
     if (!order) {
       return res.status(404).json({
@@ -490,19 +598,24 @@ router.patch('/:id/status', async (req, res) => {
       });
     }
     
-    // Emit real-time update
+    // Emit real-time update with timing information
     req.io.to('dashboard').emit('order-status-updated', {
       orderId: order._id,
       orderNumber: order.orderNumber,
       status: order.status,
-      tableNumber: order.tableNumber
+      tableNumber: order.tableNumber,
+      estimatedTime: order.estimatedTime,
+      estimatedCompletionTime: order.estimatedCompletionTime,
+      preparationStartTime: order.preparationStartTime,
+      actualPreparationTime: order.actualPreparationTime
     });
     
     // Notify table if order is ready
     if (status === 'ready') {
       req.io.to(`table-${order.tableNumber}`).emit('order-ready', {
         orderNumber: order.orderNumber,
-        message: 'Your order is ready!'
+        message: 'Your order is ready!',
+        actualPreparationTime: order.actualPreparationTime
       });
     }
     

@@ -10,110 +10,149 @@
 <body>
     <header class="header">
         <div class="container">
-            <h1>📱 QR Code Generator</h1>
-            <p class="subtitle">Generate QR codes for restaurant tables</p>
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>📱 QR Code Generator</h1>
+                    <p class="subtitle">Generate QR codes for restaurant tables</p>
+                </div>
+                <div class="header-actions">
+                    <a href="/dashboard" class="btn btn-outline">
+                        <span>📊</span>
+                        Dashboard
+                    </a>
+                    <a href="/" class="btn btn-outline">
+                        <span>🏠</span>
+                        Home
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
 
     <main class="container">
         <div class="qr-generator-section">
-            <div class="generator-controls">
-                <h2>Generate QR Codes</h2>
-                <p>Create QR codes that customers can scan to access the menu for their table.</p>
+            <div class="generator-controls card">
+                <div class="card-header">
+                    <h2>Generate QR Codes</h2>
+                    <p>Create QR codes that customers can scan to access the menu for their table.</p>
+                </div>
                 
-                <div class="form-group">
-                    <label for="server-ip">Server IP Address:</label>
-                    <input 
-                        type="text" 
-                        id="server-ip" 
-                        placeholder="192.168.1.10" 
-                        value="192.168.1.10"
-                        style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; width: 100%; max-width: 300px;"
-                    >
-                    <small>Enter the local IP address where the restaurant system is hosted</small>
-                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="server-ip">Server IP Address</label>
+                            <input 
+                                type="text" 
+                                id="server-ip" 
+                                class="form-input"
+                                placeholder="192.168.1.10" 
+                                value="192.168.1.10"
+                            >
+                            <small class="form-help">Enter the local IP address where the restaurant system is hosted</small>
+                        </div>
 
-                <div class="form-group">
-                    <label for="port-number">Port Number:</label>
-                    <input 
-                        type="number" 
-                        id="port-number" 
-                        placeholder="3000" 
-                        value="3000"
-                        style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; width: 100%; max-width: 200px;"
-                    >
-                    <small>Server port number (default: 3000)</small>
-                </div>
-
-                <div class="generation-options">
-                    <div class="option-group">
-                        <h3>Single Table</h3>
-                        <div style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
-                            <div>
-                                <label for="single-table">Table Number:</label>
-                                <input 
-                                    type="number" 
-                                    id="single-table" 
-                                    min="1" 
-                                    placeholder="1"
-                                    style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; width: 100px;"
-                                >
-                            </div>
-                            <button class="btn btn-primary" onclick="generateSingleQR()">
-                                Generate QR Code
-                            </button>
+                        <div class="form-group">
+                            <label for="port-number">Port Number</label>
+                            <input 
+                                type="number" 
+                                id="port-number" 
+                                class="form-input"
+                                placeholder="3000" 
+                                value="3000"
+                            >
+                            <small class="form-help">Server port number (default: 3000)</small>
                         </div>
                     </div>
 
-                    <div class="option-group">
-                        <h3>Multiple Tables</h3>
-                        <div style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
-                            <div>
-                                <label for="start-table">Start Table:</label>
-                                <input 
-                                    type="number" 
-                                    id="start-table" 
-                                    min="1" 
-                                    placeholder="1"
-                                    value="1"
-                                    style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; width: 100px;"
-                                >
+                    <div class="generation-options">
+                        <div class="option-group card">
+                            <div class="card-header">
+                                <h3>Single Table</h3>
                             </div>
-                            <div>
-                                <label for="end-table">End Table:</label>
-                                <input 
-                                    type="number" 
-                                    id="end-table" 
-                                    min="1" 
-                                    placeholder="10"
-                                    value="10"
-                                    style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; width: 100px;"
-                                >
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="single-table">Table Number</label>
+                                        <input 
+                                            type="number" 
+                                            id="single-table" 
+                                            class="form-input"
+                                            min="1" 
+                                            placeholder="1"
+                                        >
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" onclick="generateSingleQR()">
+                                            <span>🎯</span>
+                                            Generate QR Code
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <button class="btn btn-primary" onclick="generateMultipleQR()">
-                                Generate All QR Codes
-                            </button>
+                        </div>
+
+                        <div class="option-group card">
+                            <div class="card-header">
+                                <h3>Multiple Tables</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="start-table">Start Table</label>
+                                        <input 
+                                            type="number" 
+                                            id="start-table" 
+                                            class="form-input"
+                                            min="1" 
+                                            placeholder="1"
+                                            value="1"
+                                        >
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="end-table">End Table</label>
+                                        <input 
+                                            type="number" 
+                                            id="end-table" 
+                                            class="form-input"
+                                            min="1" 
+                                            placeholder="10"
+                                            value="10"
+                                        >
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary" onclick="generateMultipleQR()">
+                                            <span>📋</span>
+                                            Generate All QR Codes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- QR Code Display Area -->
-            <div class="qr-display-area" id="qr-display-area">
+            <div class="qr-display-area card" id="qr-display-area">
                 <div class="welcome-message">
-                    <h3>Welcome to QR Code Generator</h3>
-                    <p>Generate QR codes for your restaurant tables. Customers can scan these codes to access the menu directly from their phones.</p>
-                    <div class="features">
-                        <div class="feature">
-                            <h4>📱 Easy Scanning</h4>
+                    <div class="welcome-header">
+                        <h3>Welcome to QR Code Generator</h3>
+                        <p>Generate QR codes for your restaurant tables. Customers can scan these codes to access the menu directly from their phones.</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">📱</div>
+                            <h4>Easy Scanning</h4>
                             <p>Customers scan with any QR code reader</p>
                         </div>
-                        <div class="feature">
-                            <h4>🍽️ Table-Specific</h4>
+                        <div class="feature-card">
+                            <div class="feature-icon">🍽️</div>
+                            <h4>Table-Specific</h4>
                             <p>Each QR code links to the correct table</p>
                         </div>
-                        <div class="feature">
-                            <h4>💾 Download & Print</h4>
+                        <div class="feature-card">
+                            <div class="feature-icon">💾</div>
+                            <h4>Download & Print</h4>
                             <p>Save QR codes as images for printing</p>
                         </div>
                     </div>
@@ -122,35 +161,39 @@
         </div>
 
         <!-- Instructions -->
-        <div class="instructions-section">
-            <h2>How to Use</h2>
-            <div class="instruction-steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Set Server Details</h3>
-                        <p>Enter your local server IP address and port number. This is usually the IP of the computer running the restaurant system.</p>
+        <div class="instructions-section card">
+            <div class="card-header">
+                <h2>How to Use</h2>
+            </div>
+            <div class="card-body">
+                <div class="instruction-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Set Server Details</h3>
+                            <p>Enter your local server IP address and port number. This is usually the IP of the computer running the restaurant system.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Generate QR Codes</h3>
-                        <p>Choose to generate a single QR code for one table, or generate multiple QR codes for a range of tables.</p>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Generate QR Codes</h3>
+                            <p>Choose to generate a single QR code for one table, or generate multiple QR codes for a range of tables.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Download & Print</h3>
-                        <p>Right-click on any QR code to save it as an image. Print and place them on the corresponding tables.</p>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Download & Print</h3>
+                            <p>Right-click on any QR code to save it as an image. Print and place them on the corresponding tables.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Test Scanning</h3>
-                        <p>Test each QR code with a phone to ensure it opens the correct table menu page.</p>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Test Scanning</h3>
+                            <p>Test each QR code with a phone to ensure it opens the correct table menu page.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -158,16 +201,16 @@
     </main>
 
     <!-- Loading Modal -->
-    <div id="loading-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1002; align-items: center; justify-content: center;">
-        <div style="background: white; padding: 2rem; border-radius: 15px; text-align: center;">
-            <div class="loading-spinner" style="margin-bottom: 1rem;"></div>
+    <div id="loading-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="loading-spinner"></div>
             <h3>Generating QR Codes...</h3>
             <p id="loading-message">Please wait while we generate your QR codes.</p>
         </div>
     </div>
 
     <!-- Notification -->
-    <div id="notification" class="notification">
+    <div id="notification" class="alert">
         <span id="notification-message"></span>
     </div>
 
@@ -274,19 +317,37 @@
         function displaySingleQR(tableNumber, qrDataURL, url) {
             const displayArea = document.getElementById('qr-display-area');
             displayArea.innerHTML = `
-                <div class="qr-result">
-                    <h3>QR Code for Table ${tableNumber}</h3>
-                    <div class="qr-code-container">
-                        <img src="${qrDataURL}" alt="QR Code for Table ${tableNumber}" class="qr-code-image">
-                        <div class="qr-info">
-                            <p><strong>Table:</strong> ${tableNumber}</p>
-                            <p><strong>URL:</strong> <code>${url}</code></p>
-                            <div class="qr-actions">
-                                <button class="btn btn-secondary" onclick="downloadQR('${qrDataURL}', 'table-${tableNumber}-qr.png')">
-                                    📥 Download PNG
+                <div class="qr-results">
+                    <div class="results-header">
+                        <h3>Generated QR Code - Table ${tableNumber}</h3>
+                        <div class="header-actions">
+                            <button class="btn btn-outline" onclick="downloadQR('${qrDataURL}', 'table-${tableNumber}-qr.png')">
+                                <span>📥</span>
+                                Download
+                            </button>
+                            <button class="btn btn-outline" onclick="printQR('${qrDataURL}', '${tableNumber}')">
+                                <span>🖨️</span>
+                                Print
+                            </button>
+                        </div>
+                    </div>
+                    <div class="qr-single-display">
+                        <div class="qr-card large">
+                            <div class="qr-card-header">
+                                <h4>Table ${tableNumber}</h4>
+                                <p class="qr-url">${url}</p>
+                            </div>
+                            <div class="qr-code-container">
+                                <img src="${qrDataURL}" alt="QR Code for Table ${tableNumber}" class="qr-code-large">
+                            </div>
+                            <div class="qr-card-actions">
+                                <button class="btn btn-primary" onclick="downloadQR('${qrDataURL}', 'table-${tableNumber}-qr.png')">
+                                    <span>📥</span>
+                                    Download PNG
                                 </button>
-                                <button class="btn btn-secondary" onclick="printQR('${qrDataURL}', ${tableNumber})">
-                                    🖨️ Print
+                                <button class="btn btn-outline" onclick="printQR('${qrDataURL}', '${tableNumber}')">
+                                    <span>🖨️</span>
+                                    Print
                                 </button>
                             </div>
                         </div>
@@ -298,14 +359,20 @@
         // Display multiple QR codes
         function displayMultipleQR(qrCodes, serverIP, port) {
             const displayArea = document.getElementById('qr-display-area');
+            
             const qrGrid = qrCodes.map(qr => `
                 <div class="qr-card">
-                    <h4>Table ${qr.tableNumber}</h4>
-                    <img src="${qr.qrCodeDataURL}" alt="QR Code for Table ${qr.tableNumber}" class="qr-code-small">
+                    <div class="qr-card-header">
+                        <h4>Table ${qr.tableNumber}</h4>
+                    </div>
+                    <div class="qr-code-container">
+                        <img src="${qr.qrCodeDataURL}" alt="QR Code for Table ${qr.tableNumber}" class="qr-code-small">
+                    </div>
                     <p class="qr-url">http://${serverIP}:${port}/table/${qr.tableNumber}</p>
                     <div class="qr-card-actions">
-                        <button class="btn btn-small" onclick="downloadQR('${qr.qrCodeDataURL}', 'table-${qr.tableNumber}-qr.png')">
-                            📥 Download
+                        <button class="btn btn-small btn-primary" onclick="downloadQR('${qr.qrCodeDataURL}', 'table-${qr.tableNumber}-qr.png')">
+                            <span>📥</span>
+                            Download
                         </button>
                     </div>
                 </div>
@@ -315,9 +382,12 @@
                 <div class="qr-results">
                     <div class="results-header">
                         <h3>Generated QR Codes (${qrCodes.length} tables)</h3>
-                        <button class="btn btn-primary" onclick="downloadAllQR()">
-                            📥 Download All
-                        </button>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="downloadAllQR()">
+                                <span>📥</span>
+                                Download All
+                            </button>
+                        </div>
                     </div>
                     <div class="qr-grid">
                         ${qrGrid}
@@ -378,28 +448,31 @@
         }
 
         // Show loading modal
-        function showLoading(message) {
-            document.getElementById('loading-message').textContent = message;
-            document.getElementById('loading-modal').style.display = 'flex';
+        function showLoading(message = 'Loading...') {
+            const modal = document.getElementById('loading-modal');
+            const messageEl = document.getElementById('loading-message');
+            messageEl.textContent = message;
+            modal.style.display = 'flex';
         }
 
         // Hide loading modal
         function hideLoading() {
-            document.getElementById('loading-modal').style.display = 'none';
+            const modal = document.getElementById('loading-modal');
+            modal.style.display = 'none';
         }
 
         // Show notification
-        function showNotification(message, type = 'success') {
+        function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             const messageEl = document.getElementById('notification-message');
             
             messageEl.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.classList.add('show');
+            notification.className = `alert alert-${type}`;
+            notification.style.transform = 'translateX(0)';
             
             setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
+                notification.style.transform = 'translateX(400px)';
+            }, 4000);
         }
 
         // Initialize page

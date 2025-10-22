@@ -10,8 +10,10 @@
 <body>
     <header class="header">
         <div class="container">
-            <h1>📊 Kitchen Dashboard</h1>
-            <p class="subtitle">Real-time Order Management</p>
+            <div class="header-content">
+                <h1>📊 Kitchen Dashboard</h1>
+                <p class="subtitle">Professional Order Management System</p>
+            </div>
         </div>
     </header>
 
@@ -19,43 +21,50 @@
         <!-- Dashboard Header -->
         <div class="dashboard-header">
             <div>
-                <h2>Live Orders</h2>
-                <p id="last-updated">Last updated: <span>-</span></p>
+                <h2 style="color: var(--primary-color); font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Live Orders</h2>
+                <p id="last-updated" style="color: var(--text-secondary); font-weight: 500;">Last updated: <span>-</span></p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                <select id="status-filter" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
-                    <option value="all">All Orders</option>
-                    <option value="pending">Pending</option>
-                    <option value="preparing">Preparing</option>
-                    <option value="ready">Ready</option>
-                    <option value="completed">Completed</option>
-                </select>
-                <input 
-                    type="text" 
-                    id="search-order" 
-                    placeholder="Search by order number..." 
-                    style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 5px; min-width: 200px;"
-                >
-                <button class="btn" onclick="refreshOrders()">🔄 Refresh</button>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <select id="status-filter" class="form-input" style="min-width: 150px;">
+                        <option value="all">All Orders</option>
+                        <option value="pending">Pending</option>
+                        <option value="preparing">Preparing</option>
+                        <option value="ready">Ready</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input 
+                        type="text" 
+                        id="search-order" 
+                        placeholder="Search by order number..." 
+                        class="form-input"
+                        style="min-width: 200px;"
+                    >
+                </div>
+                <button class="btn btn-primary" onclick="refreshOrders()">
+                    <span>🔄</span> Refresh
+                </button>
             </div>
         </div>
 
         <!-- Statistics -->
-        <div class="dashboard-stats" id="dashboard-stats">
+        <div class="stats-grid" id="dashboard-stats">
             <div class="stat-card">
-                <div class="stat-number" id="total-orders">-</div>
+                <div class="stat-value" id="total-orders">-</div>
                 <div class="stat-label">Total Orders</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="pending-orders">-</div>
+                <div class="stat-value" id="pending-orders">-</div>
                 <div class="stat-label">Pending</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="preparing-orders">-</div>
+                <div class="stat-value" id="preparing-orders">-</div>
                 <div class="stat-label">Preparing</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="ready-orders">-</div>
+                <div class="stat-value" id="ready-orders">-</div>
                 <div class="stat-label">Ready</div>
             </div>
         </div>
@@ -63,24 +72,26 @@
         <!-- Orders Grid -->
         <div class="orders-grid" id="orders-grid">
             <div class="loading">
-                <h3>Loading orders...</h3>
-                <p>Please wait while we fetch the latest orders.</p>
+                <div class="spinner"></div>
+                <h3 style="margin-top: 1rem; color: var(--text-primary);">Loading orders...</h3>
+                <p style="color: var(--text-secondary);">Please wait while we fetch the latest orders.</p>
             </div>
         </div>
 
         <!-- Empty State -->
-        <div id="empty-orders" class="empty-state" style="display: none;">
-            <h3>No orders found</h3>
+        <div id="empty-orders" class="empty-state" style="display: none; text-align: center; padding: 3rem; color: var(--text-secondary);">
+            <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;">📋</div>
+            <h3 style="color: var(--text-primary); margin-bottom: 1rem;">No orders found</h3>
             <p>Orders will appear here as customers place them.</p>
         </div>
     </main>
 
     <!-- Order Details Modal -->
-    <div id="order-details-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1002; align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: white; padding: 2rem; border-radius: 15px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2>Order Details</h2>
-                <button onclick="closeOrderDetails()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+    <div id="order-details-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1002; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px);">
+        <div style="background: var(--white); padding: 2rem; border-radius: var(--border-radius); max-width: 700px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-heavy); border: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border-color);">
+                <h2 style="color: var(--primary-color); font-size: 1.8rem; font-weight: 700; margin: 0;">Order Details</h2>
+                <button onclick="closeOrderDetails()" style="background: var(--danger-color); color: var(--white); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">&times;</button>
             </div>
             <div id="order-details-content">
                 <!-- Order details will be populated here -->
@@ -88,8 +99,8 @@
         </div>
     </div>
 
-    <!-- Notification -->
-    <div id="notification" class="notification">
+    <!-- Professional Notification -->
+    <div id="notification" class="alert" style="position: fixed; top: 30px; right: 30px; z-index: 1003; min-width: 300px; transform: translateX(400px); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: var(--shadow-heavy);">
         <span id="notification-message"></span>
     </div>
 
@@ -123,8 +134,10 @@
             const messageEl = document.getElementById('notification-message');
             
             messageEl.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.classList.add('show');
+            
+            // Apply appropriate styling based on type
+            notification.className = `alert alert-${type}`;
+            notification.style.transform = 'translateX(0)';
             
             // Play sound for new orders
             if (type === 'success' && message.includes('New order')) {
@@ -132,7 +145,7 @@
             }
             
             setTimeout(() => {
-                notification.classList.remove('show');
+                notification.style.transform = 'translateX(400px)';
             }, 5000);
         }
 

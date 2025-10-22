@@ -55,6 +55,18 @@ const orderSchema = new mongoose.Schema({
   estimatedTime: {
     type: Number, // minutes
     default: 20
+  },
+  preparationStartTime: {
+    type: Date,
+    default: null
+  },
+  estimatedCompletionTime: {
+    type: Date,
+    default: null
+  },
+  actualPreparationTime: {
+    type: Number, // minutes
+    default: null
   }
 }, {
   timestamps: true

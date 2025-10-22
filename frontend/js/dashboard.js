@@ -148,7 +148,31 @@ function createOrderCard(order) {
     
     const statusColor = statusColors[order.status] || '#9e9e9e';
     const createdTime = new Date(order.createdAt).toLocaleTimeString();
-    const estimatedTime = order.estimatedTime ? `${order.estimatedTime} min` : 'N/A';
+    
+    // Calculate time displays
+    let timeDisplay = '';
+    let timerElement = '';
+    
+    if (order.status === 'preparing' && order.preparationStartTime && order.estimatedCompletionTime) {
+        const now = new Date();
+        const startTime = new Date(order.preparationStartTime);
+        const estimatedEnd = new Date(order.estimatedCompletionTime);
+        const elapsed = Math.floor((now - startTime) / (1000 * 60)); // minutes elapsed
+        const remaining = Math.floor((estimatedEnd - now) / (1000 * 60)); // minutes remaining
+        
+        timeDisplay = `Started ${elapsed}m ago • ${Math.max(0, remaining)}m remaining`;
+        timerElement = `
+            <div class="preparation-timer" data-order-id="${order._id}" data-estimated-end="${order.estimatedCompletionTime}">
+                <div class="timer-progress">
+                    <div class="progress-bar" style="width: ${Math.min(100, (elapsed / order.estimatedTime) * 100)}%"></div>
+                </div>
+                <div class="timer-text">${timeDisplay}</div>
+            </div>
+        `;
+    } else {
+        const estimatedTime = order.estimatedTime ? `${order.estimatedTime} min` : 'N/A';
+        timeDisplay = `Est. ${estimatedTime}`;
+    }
     
     return `
         <div class="order-card" data-order-id="${order._id}" data-status="${order.status}">
@@ -165,16 +189,18 @@ function createOrderCard(order) {
             <div class="order-items">
                 ${order.items.map(item => `
                     <div class="order-item">
-                        <span>${item.quantity}x ${item.menuItem.name}</span>
+                        <span>${item.quantity}x ${item.name}</span>
                         <span>$${(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                 `).join('')}
             </div>
             
+            ${timerElement}
+            
             <div class="order-footer">
                 <div class="order-total">
                     <strong>Total: $${order.totalAmount.toFixed(2)}</strong>
-                    <small>Est. ${estimatedTime}</small>
+                    <small>${timeDisplay}</small>
                 </div>
                 <div class="order-actions">
                     ${getStatusButtons(order)}
@@ -201,6 +227,56 @@ function createOrderCard(order) {
         </div>
     `;
 }
+
+// Update preparation timers
+function updatePreparationTimers() {
+    const timers = document.querySelectorAll('.preparation-timer');
+    timers.forEach(timer => {
+        const orderId = timer.dataset.orderId;
+        const estimatedEnd = new Date(timer.dataset.estimatedEnd);
+        const now = new Date();
+        
+        const order = orders.find(o => o._id === orderId);
+        if (!order || !order.preparationStartTime) return;
+        
+        const startTime = new Date(order.preparationStartTime);
+        const elapsed = Math.floor((now - startTime) / (1000 * 60)); // minutes elapsed
+        const remaining = Math.floor((estimatedEnd - now) / (1000 * 60)); // minutes remaining
+        
+        const timeText = timer.querySelector('.timer-text');
+        const progressBar = timer.querySelector('.progress-bar');
+        
+        if (timeText) {
+            timeText.textContent = `Started ${elapsed}m ago • ${Math.max(0, remaining)}m remaining`;
+        }
+        
+        if (progressBar && order.estimatedTime) {
+            const progress = Math.min(100, (elapsed / order.estimatedTime) * 100);
+            progressBar.style.width = `${progress}%`;
+            
+            // Change color based on progress
+            if (progress > 90) {
+                progressBar.style.backgroundColor = '#f44336'; // Red - overdue
+            } else if (progress > 75) {
+                progressBar.style.backgroundColor = '#ff9800'; // Orange - almost due
+            } else {
+                progressBar.style.backgroundColor = '#4caf50'; // Green - on time
+            }
+        }
+    });
+}
+
+// Start timer updates
+function startTimerUpdates() {
+    // Update timers every 30 seconds
+    setInterval(updatePreparationTimers, 30000);
+}
+
+// Initialize dashboard with timer updates
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+    startTimerUpdates();
+});
 
 // Get status buttons based on current status
 function getStatusButtons(order) {
