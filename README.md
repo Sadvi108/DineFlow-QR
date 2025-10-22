@@ -1,6 +1,6 @@
-# 🍽️ QR-Based Restaurant Ordering System (DineFlow-QR)
+# 🍽️ DineFlow - QR-Based Restaurant Ordering System
 
-A complete local network restaurant ordering system that allows customers to scan QR codes, view menus, place orders, and enables staff to manage orders in real-time.
+A complete local network restaurant ordering system that allows customers to scan QR codes, view menus, place orders, and enables staff to manage orders in real-time with advanced preparation timing features.
 
 ## 🌟 Features
 

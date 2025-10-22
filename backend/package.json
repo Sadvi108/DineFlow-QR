@@ -1,7 +1,7 @@
 {
-  "name": "restaurant-qr-backend",
+  "name": "dineflow-backend",
   "version": "1.0.0",
-  "description": "Backend for QR-based restaurant ordering system",
+  "description": "Backend for DineFlow - QR-based restaurant ordering system with preparation timing",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
